@@ -1,0 +1,22 @@
+{
+  "name": "projector-scoreboard",
+  "version": "1.0.0",
+  "description": "Basketball scoreboard for projector display and remote control",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js",
+    "test": "node --test"
+  },
+  "keywords": [
+    "scoreboard",
+    "basketball",
+    "projector",
+    "socketio"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.19.2",
+    "socket.io": "^4.7.5"
+  }
+}
