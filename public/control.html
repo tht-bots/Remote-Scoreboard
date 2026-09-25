@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Scoreboard Controller</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body class="control-screen">
+    <div class="controller-shell">
+      <h1>Basketball Scoreboard Controller</h1>
+
+      <div class="panel-grid">
+        <section class="control-panel clock-panel">
+          <h2>Game Clock</h2>
+          <div class="clock-controls">
+            <button id="toggleClockButton" class="primary-large">Start / Pause</button>
+            <button id="resetButton" class="secondary-large">Reset game</button>
+          </div>
+          <div class="field-group compact">
+            <label>Minutes</label>
+            <input id="clockMinutesInput" type="number" min="0" max="12" value="12" />
+          </div>
+          <div class="field-group compact">
+            <label>Seconds</label>
+            <input id="clockSecondsInput" type="number" min="0" max="59" value="0" />
+          </div>
+          <button id="applyClockButton" class="primary-large">Set clock</button>
+          <div class="field-group compact">
+            <label>Current quarter</label>
+            <input id="quarterInput" type="number" min="1" max="10" value="1" />
+          </div>
+          <button id="applyQuarterButton" class="primary-large">Update quarter</button>
+        </section>
+
+        <section class="control-panel">
+          <h2>Score</h2>
+          <div class="team-controls">
+            <div>
+              <h3>Home</h3>
+              <button data-team="home" data-delta="3">+3</button>
+              <button data-team="home" data-delta="2">+2</button>
+              <button data-team="home" data-delta="1">+1</button>
+              <button data-team="home" data-delta="-1">-1</button>
+            </div>
+            <div>
+              <h3>Away</h3>
+              <button data-team="away" data-delta="3">+3</button>
+              <button data-team="away" data-delta="2">+2</button>
+              <button data-team="away" data-delta="1">+1</button>
+              <button data-team="away" data-delta="-1">-1</button>
+            </div>
+          </div>
+        </section>
+
+        <section class="control-panel">
+          <h2>Fouls</h2>
+          <div class="mini-controls">
+            <div>
+              <h3>Home</h3>
+              <button data-team="home" data-foul="1">+1 foul</button>
+              <button data-team="home" data-foul="-1">-1 foul</button>
+            </div>
+            <div>
+              <h3>Away</h3>
+              <button data-team="away" data-foul="1">+1 foul</button>
+              <button data-team="away" data-foul="-1">-1 foul</button>
+            </div>
+          </div>
+        </section>
+
+        <section class="control-panel">
+          <h2>Timeouts</h2>
+          <div class="mini-controls">
+            <div>
+              <h3>Home</h3>
+              <button data-team="home" data-timeout="1">+1</button>
+              <button data-team="home" data-timeout="-1">-1</button>
+            </div>
+            <div>
+              <h3>Away</h3>
+              <button data-team="away" data-timeout="1">+1</button>
+              <button data-team="away" data-timeout="-1">-1</button>
+            </div>
+          </div>
+        </section>
+
+        <section class="control-panel team-settings-panel">
+          <h2>Team Settings</h2>
+          <div class="field-group">
+            <label>Home team</label>
+            <input id="homeNameInput" type="text" maxlength="20" />
+            <button data-team="home" data-action="set-name">Apply</button>
+          </div>
+          <div class="field-group">
+            <label>Home logo</label>
+            <input id="homeLogoInput" type="file" accept="image/*" />
+          </div>
+          <div class="field-group color-row">
+            <label>Home color</label>
+            <input id="homeColorInput" type="color" value="#1d4ed8" />
+            <button id="applyHomeColorButton" class="compact-button">Apply color</button>
+          </div>
+          <div class="field-group">
+            <label>Away team</label>
+            <input id="awayNameInput" type="text" maxlength="20" />
+            <button data-team="away" data-action="set-name">Apply</button>
+          </div>
+          <div class="field-group">
+            <label>Away logo</label>
+            <input id="awayLogoInput" type="file" accept="image/*" />
+          </div>
+          <div class="field-group color-row">
+            <label>Away color</label>
+            <input id="awayColorInput" type="color" value="#dc2626" />
+            <button id="applyAwayColorButton" class="compact-button">Apply color</button>
+          </div>
+        </section>
+      </div>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="/control.js"></script>
+  </body>
+</html>

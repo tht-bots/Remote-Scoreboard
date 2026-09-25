@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Basketball Scoreboard</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body class="display-screen">
+    <div class="display-shell">
+      <header class="top-bar">
+        <div class="quarter-box highlight center-box">
+          <span class="label">QUARTER</span>
+          <strong id="quarterValue">1</strong>
+        </div>
+        <div class="clock-box highlight center-box">
+          <span class="label">CLOCK</span>
+          <strong id="clockValue">12:00</strong>
+        </div>
+      </header>
+
+      <main class="score-grid">
+        <section class="team-panel home-panel">
+          <div class="team-header">
+            <div class="team-tag">HOME</div>
+            <span id="homeTimeouts" class="timeout-display">● ● ●</span>
+          </div>
+          <div class="team-logo-wrap">
+            <img id="homeLogo" class="team-logo" alt="Home logo" />
+          </div>
+          <h1 id="homeName">Home</h1>
+          <div class="score"><span id="homeScore">0</span></div>
+          <div class="meta-row">
+            <span>FOULS</span>
+            <strong id="homeFouls">0</strong>
+          </div>
+        </section>
+
+        <section class="team-panel away-panel">
+          <div class="team-header">
+            <div class="team-tag">AWAY</div>
+            <span id="awayTimeouts" class="timeout-display">● ● ●</span>
+          </div>
+          <div class="team-logo-wrap">
+            <img id="awayLogo" class="team-logo" alt="Away logo" />
+          </div>
+          <h1 id="awayName">Away</h1>
+          <div class="score"><span id="awayScore">0</span></div>
+          <div class="meta-row">
+            <span>FOULS</span>
+            <strong id="awayFouls">0</strong>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="/app.js"></script>
+  </body>
+</html>
