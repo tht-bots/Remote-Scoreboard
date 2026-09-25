@@ -1,5 +1,6 @@
 const socket = io();
 
+const possessionButtons = document.querySelectorAll('[data-possession]');
 const homeNameInput = document.getElementById('homeNameInput');
 const awayNameInput = document.getElementById('awayNameInput');
 const homeLogoInput = document.getElementById('homeLogoInput');
@@ -9,6 +10,99 @@ const awayColorInput = document.getElementById('awayColorInput');
 const clockMinutesInput = document.getElementById('clockMinutesInput');
 const clockSecondsInput = document.getElementById('clockSecondsInput');
 const quarterInput = document.getElementById('quarterInput');
+const enableSoundToggle = document.getElementById('enableSoundToggle');
+const testBuzzerButton = document.getElementById('testBuzzerButton');
+const quickBlastButton = document.getElementById('quickBlastButton');
+
+let audioContext = null;
+let soundEnabled = enableSoundToggle.checked;
+let wasAtZero = false;
+
+function ensureAudioContext() {
+  const AudioCtor = window.AudioContext || window.webkitAudioContext;
+  if (!AudioCtor) return null;
+
+  if (!audioContext) {
+    audioContext = new AudioCtor();
+  }
+
+  if (audioContext.state === 'suspended') {
+    audioContext.resume();
+  }
+
+  return audioContext;
+}
+
+function playBuzzer() {
+  const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  const duration = 1.5; 
+  const frequencies = [150, 154, 210, 215]; 
+
+  const filter = audioCtx.createBiquadFilter();
+  filter.type = 'lowpass';
+  filter.frequency.value = 4000; 
+
+  const gainNode = audioCtx.createGain();
+  filter.connect(gainNode);
+  gainNode.connect(audioCtx.destination);
+
+  gainNode.gain.setValueAtTime(0, audioCtx.currentTime);
+  gainNode.gain.linearRampToValueAtTime(0.8, audioCtx.currentTime + 0.05); 
+  gainNode.gain.setValueAtTime(0.8, audioCtx.currentTime + duration - 0.2); 
+  gainNode.gain.linearRampToValueAtTime(0, audioCtx.currentTime + duration); 
+
+  frequencies.forEach((freq, index) => {
+    const osc = audioCtx.createOscillator();
+    osc.type = index % 2 === 0 ? 'square' : 'sawtooth'; 
+    osc.frequency.value = freq;
+    osc.connect(filter); 
+    osc.start(audioCtx.currentTime);
+    osc.stop(audioCtx.currentTime + duration);
+  });
+}
+
+function playBuzzerPattern() {
+  if (!soundEnabled) return;
+  playBuzzer();
+}
+
+function playQuickBlast() {
+  const ctx = ensureAudioContext();
+  if (!ctx || !soundEnabled) return;
+
+  const duration = 0.35;
+  const frequencies = [210, 240, 260];
+
+  const filter = ctx.createBiquadFilter();
+  filter.type = 'lowpass';
+  filter.frequency.value = 2800;
+
+  const gainNode = ctx.createGain();
+  filter.connect(gainNode);
+  gainNode.connect(ctx.destination);
+
+  gainNode.gain.setValueAtTime(0, ctx.currentTime);
+  gainNode.gain.linearRampToValueAtTime(0.6, ctx.currentTime + 0.02);
+  gainNode.gain.setValueAtTime(0.6, ctx.currentTime + duration - 0.05);
+  gainNode.gain.linearRampToValueAtTime(0, ctx.currentTime + duration);
+
+  frequencies.forEach((freq, index) => {
+    const osc = ctx.createOscillator();
+    osc.type = index === 0 ? 'square' : 'triangle';
+    osc.frequency.value = freq;
+    osc.connect(filter);
+    osc.start(ctx.currentTime + index * 0.015);
+    osc.stop(ctx.currentTime + duration + index * 0.015);
+  });
+}
+
+function updateSoundPreference() {
+  soundEnabled = enableSoundToggle.checked;
+  localStorage.setItem('scoreboard-sound-enabled', String(soundEnabled));
+  if (soundEnabled) {
+    ensureAudioContext();
+  }
+}
 
 function setTeamName(team) {
   const input = team === 'home' ? homeNameInput : awayNameInput;
@@ -60,8 +154,21 @@ function adjustTimeouts(team, delta) {
   socket.emit('adjustTimeouts', { team, delta: Number(delta) });
 }
 
+function syncPossessionDisplay(state) {
+  const selectedTeam = state && state.possession ? state.possession : 'home';
+
+  possessionButtons.forEach((button) => {
+    const isActive = button.dataset.possession === selectedTeam;
+    button.classList.toggle('possession-selected', isActive);
+    button.setAttribute('aria-pressed', String(isActive));
+  });
+}
+
 function updateStateFromServer(state) {
   if (!state) return;
+
+  const atZero = (state.clock.minutes === 0 && state.clock.seconds === 0);
+
   homeNameInput.value = state.home.name;
   awayNameInput.value = state.away.name;
   homeColorInput.value = state.home.color || '#1d4ed8';
@@ -71,6 +178,18 @@ function updateStateFromServer(state) {
   clockMinutesInput.value = state.clock.minutes;
   clockSecondsInput.value = state.clock.seconds;
   quarterInput.value = Number(state.quarter ?? state.period ?? 1);
+  syncPossessionDisplay(state);
+
+  if (soundEnabled && atZero && !wasAtZero) {
+    playBuzzerPattern();
+  }
+
+  wasAtZero = atZero;
+}
+
+function setPossession(team) {
+  socket.emit('setPossession', { team });
+  syncPossessionDisplay({ possession: team });
 }
 
 socket.on('state', (state) => {
@@ -130,6 +249,30 @@ document.getElementById('applyClockButton').addEventListener('click', () => {
 document.getElementById('applyQuarterButton').addEventListener('click', () => {
   const quarter = Number(quarterInput.value);
   socket.emit('setQuarter', { quarter });
+});
+
+enableSoundToggle.addEventListener('change', () => {
+  updateSoundPreference();
+});
+
+testBuzzerButton.addEventListener('click', () => {
+  playBuzzerPattern();
+});
+
+quickBlastButton.addEventListener('click', () => {
+  playQuickBlast();
+});
+
+const savedSoundSetting = localStorage.getItem('scoreboard-sound-enabled');
+if (savedSoundSetting !== null) {
+  soundEnabled = savedSoundSetting === 'true';
+  enableSoundToggle.checked = soundEnabled;
+}
+
+possessionButtons.forEach((button) => {
+  button.addEventListener('click', () => {
+    setPossession(button.dataset.possession);
+  });
 });
 
 document.getElementById('applyHomeColorButton').addEventListener('click', () => {

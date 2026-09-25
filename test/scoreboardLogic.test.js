@@ -1,6 +1,6 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
-const { createInitialState, adjustScore, adjustFoul, adjustTimeouts, tickClock, setRunning, setPeriod, setTeamName, setTeamColor } = require('../scoreboardLogic.js');
+const { createInitialState, adjustScore, adjustFoul, adjustTimeouts, tickClock, setRunning, setPeriod, setTeamName, setTeamColor, setPossession } = require('../scoreboardLogic.js');
 
 test('creates the default game state', () => {
   const state = createInitialState();
@@ -55,4 +55,12 @@ test('updates custom team colors', () => {
 
   assert.equal(updated.home.color, '#123456');
   assert.equal(updated.away.color, '#dc2626');
+});
+
+test('updates which team has possession', () => {
+  const state = createInitialState();
+  const updated = setPossession(state, 'away');
+
+  assert.equal(updated.possession, 'away');
+  assert.equal(updated.home.name, 'Home');
 });

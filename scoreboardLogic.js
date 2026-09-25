@@ -126,6 +126,17 @@ function setTeamColor(state, team, color) {
   };
 }
 
+function setPossession(state, team) {
+  if (!state || !team || !['home', 'away'].includes(team)) {
+    return state;
+  }
+
+  return {
+    ...state,
+    possession: team,
+  };
+}
+
 function tickClock(state, seconds = 1) {
   if (!state || !state.running) {
     return state;
@@ -150,6 +161,7 @@ module.exports = {
   createInitialState,
   setTeamName,
   setTeamColor,
+  setPossession,
   adjustScore,
   adjustFoul,
   adjustTimeouts,

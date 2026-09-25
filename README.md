@@ -4,6 +4,8 @@ A lightweight basketball scoreboard web app built for a projector display and a 
 
 This project is intentionally simple to deploy and run on a Windows PC connected to projectors, while allowing a second laptop or tablet to act as the control surface without needing direct local access to the projector display.
 
+Basketball Icon by Selman Design on <a href="https://icon-icons.com/authors/793-selman-design">Icon-Icons.com</a>
+
 ## Features
 
 - Live scoreboard display for a projector or large display

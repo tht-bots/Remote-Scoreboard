@@ -45,11 +45,11 @@ body {
 }
 
 .top-bar {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(220px, 1fr));
-  gap: 22px;
-  max-width: 760px;
-  margin: 0 auto 18px;
+  display: flex;
+  justify-content: center;
+  align-items: stretch;
+  max-width: 980px;
+  margin: 22px auto 0;
 }
 
 .center-box {
@@ -68,21 +68,58 @@ body {
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
 }
 
-.label {
+.label,
+.quarter-label {
   display: block;
-  font-size: 0.82rem;
   letter-spacing: 0.22rem;
   color: var(--muted);
-  margin-bottom: 8px;
   text-transform: uppercase;
+}
+
+.label {
+  font-size: 0.82rem;
+}
+
+.clock-stack {
+  min-width: min(70vw, 620px);
+  padding-inline: 34px;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.clock-stack.clock-warning {
+  border-color: rgba(248, 113, 113, 0.95);
+  box-shadow:
+    0 0 0 3px rgba(239, 68, 68, 0.38),
+    0 0 22px rgba(239, 68, 68, 0.7),
+    inset 0 0 18px rgba(239, 68, 68, 0.14);
+  animation: clockWarningPulse 0.55s ease-in-out infinite alternate;
+}
+
+@keyframes clockWarningPulse {
+  0% { transform: scale(1); box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.38), 0 0 18px rgba(239, 68, 68, 0.6); }
+  100% { transform: scale(1.01); box-shadow: 0 0 0 5px rgba(239, 68, 68, 0.22), 0 0 30px rgba(239, 68, 68, 0.9), inset 0 0 22px rgba(239, 68, 68, 0.18); }
+}
+
+.quarter-label {
+  margin-top: 10px;
+  margin-bottom: 4px;
+  font-size: 0.9rem;
 }
 
 #quarterValue,
 #clockValue,
 #timeoutsSummary {
-  font-size: clamp(2rem, 4vw, 4.2rem);
   font-weight: 900;
   letter-spacing: 0.04em;
+}
+
+#quarterValue {
+  font-size: clamp(2.5rem, 3.5vw, 4.1rem);
+}
+
+#clockValue {
+  font-size: clamp(5rem, 12vw, 16rem);
+  line-height: 0.9;
 }
 
 .score-grid {
@@ -90,6 +127,10 @@ body {
   grid-template-columns: repeat(2, minmax(280px, 1fr));
   gap: 22px;
   min-height: 670px;
+}
+
+.score-grid + .top-bar {
+  margin-top: 18px;
 }
 
 .team-panel {
@@ -118,7 +159,11 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 12px;
+  min-height: 70px;
   margin-bottom: 12px;
+  padding-top: 8px;
+  position: relative;
 }
 
 .team-tag {
@@ -129,10 +174,32 @@ body {
 }
 
 .timeout-display {
+  margin-left: auto;
   font-size: 1.5rem;
   letter-spacing: 0.25rem;
   color: var(--accent-soft);
   text-shadow: 0 0 18px rgba(248, 181, 0, 0.6);
+}
+
+.team-panel.possession-active .team-header {
+  display: flex;
+  justify-content: space-between;
+}
+
+.team-panel.possession-active .possession-badge {
+  position: absolute;
+  left: 50%;
+  top: calc(50% + 14px);
+  display: flex;
+  transform: translate(-50%, -50%);
+  z-index: 2;
+  animation: possessionPulse 0.7s ease-in-out 1;
+}
+
+.team-panel.possession-active .timeout-display {
+  margin-left: auto;
+  position: relative;
+  z-index: 1;
 }
 
 .team-logo-wrap {
@@ -192,6 +259,38 @@ body {
   0% { transform: scale(1); opacity: 0.7; }
   35% { transform: scale(1.08); opacity: 1; }
   100% { transform: scale(1); opacity: 1; }
+}
+
+.possession-badge {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 82px;
+  height: 82px;
+  min-width: 82px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 0 18px rgba(248, 181, 0, 0.42);
+  transform-origin: center;
+  justify-self: center;
+}
+
+.possession-badge img {
+  display: block;
+  width: 60px;
+  height: 60px;
+  object-fit: contain;
+  filter: drop-shadow(0 0 10px rgba(255, 221, 115, 0.9));
+  transform: translateY(0) scale(1);
+  margin: 0 auto;
+}
+
+@keyframes possessionPulse {
+  0% { transform: translate(-50%, -50%) scale(0.7); opacity: 0.4; }
+  35% { transform: translate(-50%, -50%) scale(1.18); opacity: 1; }
+  60% { transform: translate(-50%, -50%) scale(0.96); opacity: 1; }
+  100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
 }
 
 .meta-row {
@@ -282,6 +381,12 @@ button {
 button:hover {
   transform: translateY(-1px);
   filter: brightness(1.04);
+}
+
+[data-possession].possession-selected {
+  background: linear-gradient(135deg, #f8b500, #ffd166);
+  color: #111827;
+  box-shadow: 0 0 0 3px rgba(248, 181, 0, 0.18), 0 12px 24px rgba(248, 181, 0, 0.2);
 }
 
 .team-controls,

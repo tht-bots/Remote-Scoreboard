@@ -8,21 +8,11 @@
   </head>
   <body class="display-screen">
     <div class="display-shell">
-      <header class="top-bar">
-        <div class="quarter-box highlight center-box">
-          <span class="label">QUARTER</span>
-          <strong id="quarterValue">1</strong>
-        </div>
-        <div class="clock-box highlight center-box">
-          <span class="label">CLOCK</span>
-          <strong id="clockValue">12:00</strong>
-        </div>
-      </header>
-
       <main class="score-grid">
-        <section class="team-panel home-panel">
+        <section class="team-panel home-panel" data-team="home">
           <div class="team-header">
             <div class="team-tag">HOME</div>
+            <span class="possession-badge"><img src="/basketball_icon_125591.svg" alt="Home possession" /></span>
             <span id="homeTimeouts" class="timeout-display">● ● ●</span>
           </div>
           <div class="team-logo-wrap">
@@ -36,9 +26,10 @@
           </div>
         </section>
 
-        <section class="team-panel away-panel">
+        <section class="team-panel away-panel" data-team="away">
           <div class="team-header">
             <div class="team-tag">AWAY</div>
+            <span class="possession-badge"><img src="/basketball_icon_125591.svg" alt="Away possession" /></span>
             <span id="awayTimeouts" class="timeout-display">● ● ●</span>
           </div>
           <div class="team-logo-wrap">
@@ -52,6 +43,14 @@
           </div>
         </section>
       </main>
+
+      <header class="top-bar">
+        <div class="clock-stack highlight center-box">
+          <strong id="clockValue">12:00</strong>
+          <span class="quarter-label">QUARTER</span>
+          <strong id="quarterValue">1</strong>
+        </div>
+      </header>
     </div>
 
     <script src="/socket.io/socket.io.js"></script>

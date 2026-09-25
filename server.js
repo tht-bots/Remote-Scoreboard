@@ -9,6 +9,7 @@ const {
   adjustTimeouts,
   setTeamName,
   setTeamColor,
+  setPossession,
   setRunning,
   setQuarter,
   setPeriod,
@@ -68,6 +69,7 @@ app.get(['/control', '/control/', '/control.html'], requireControllerAuth, (req,
 });
 
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(__dirname));
 
 app.get('/health', (req, res) => {
   res.json({ ok: true, state });
@@ -143,6 +145,12 @@ io.on('connection', (socket) => {
   socket.on('setTeamColor', ({ team, color }) => {
     if (!team || !color) return;
     state = setTeamColor(state, team, color);
+    emitState();
+  });
+
+  socket.on('setPossession', ({ team }) => {
+    if (!team) return;
+    state = setPossession(state, team);
     emitState();
   });
 

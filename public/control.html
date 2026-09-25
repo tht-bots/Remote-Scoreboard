@@ -26,11 +26,26 @@
             <input id="clockSecondsInput" type="number" min="0" max="59" value="0" />
           </div>
           <button id="applyClockButton" class="primary-large">Set clock</button>
+          <div class="field-group compact sound-row">
+            <label class="checkbox-label">
+              <input id="enableSoundToggle" type="checkbox" checked />
+              <span>Enable sound</span>
+            </label>
+          </div>
+          <button id="testBuzzerButton" class="secondary-large">Test buzzer</button>
+          <button id="quickBlastButton" class="secondary-large">Quick blast</button>
           <div class="field-group compact">
             <label>Current quarter</label>
             <input id="quarterInput" type="number" min="1" max="10" value="1" />
           </div>
           <button id="applyQuarterButton" class="primary-large">Update quarter</button>
+          <div class="field-group compact">
+            <label>Possession</label>
+            <div class="mini-controls">
+              <button data-team="home" data-possession="home">Home</button>
+              <button data-team="away" data-possession="away">Away</button>
+            </div>
+          </div>
         </section>
 
         <section class="control-panel">
